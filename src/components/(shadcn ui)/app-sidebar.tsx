@@ -115,7 +115,7 @@ export function AppSidebar() {
 
       </SidebarContent>
 
-      <SidebarFooter className="p-3 border-t border-gray-100">
+      <SidebarFooter className="p-3 border-t border-gray-100 overflow-hidden mr-2">
         <div className="flex items-center gap-2">
           <img
             src={user?.imageUrl}
