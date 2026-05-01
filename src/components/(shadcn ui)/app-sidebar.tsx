@@ -30,9 +30,6 @@ import { useUser } from "@clerk/nextjs";
 const mainNavItems = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "All Apps", href: "/apps", icon: LayoutGrid },
-  { label: "Templates", href: "/templates", icon: FileText },
-  { label: "Integrations", href: "/integrations", icon: Plug },
-  { label: "Community", href: "/community", icon: Users, hasChevron: true },
 ];
 
 const recentItems = [
@@ -41,10 +38,8 @@ const recentItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [favoritesOpen, setFavoritesOpen] = useState(true);
   const [recentsOpen, setRecentsOpen] = useState(true);
   const { user } = useUser();
-
   return (
     <Sidebar className="border-r border-gray-200 bg-white">
 
@@ -73,9 +68,7 @@ export function AppSidebar() {
                   <item.icon className="w-4 h-4 shrink-0" />
                   {item.label}
                 </span>
-                {item.hasChevron && (
-                  <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-                )}
+                
               </Link>
             );
           })}
@@ -117,7 +110,6 @@ export function AppSidebar() {
 
       </SidebarContent>
 
-      {/* Upgrade Plan Footer */}
       <SidebarFooter className="p-3 border-t border-gray-100">
         <div className="flex items-center gap-2">
           <img
@@ -129,7 +121,7 @@ export function AppSidebar() {
           
           <div className="flex flex-col text-sm">
             <span className="font-medium">
-              {user?.username || "User"}
+              {user?.fullName || "User"}
             </span>
             <span className="text-gray-500 text-xs">
               {user?.emailAddresses[0].emailAddress}
