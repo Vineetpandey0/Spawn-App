@@ -6,7 +6,7 @@ import { AppSidebar } from "@/components/(shadcn ui)/app-sidebar";
 import AuthGuard from "@/components/auth/AuthGuard";
 
 export const metadata: Metadata = {
-  title: "App Builder – Vineet's Workspace",
+  title: "App Builder Workspace",
   description: "Build apps with just a prompt. No code, no design skills needed.",
 };
 
@@ -18,16 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <AuthGuard>
-      <body className="min-h-screen bg-white text-gray-900 antialiased">
+      <body className="h-screen overflow-hidden bg-white text-gray-900 antialiased">
         <SidebarProvider defaultOpen={true}>
 
-          {/* Fixed Top Navbar */}
           <TopNav />
 
-          {/* Sidebar */}
           <AppSidebar />
 
-          {/* Main Content — SidebarInset handles the sidebar gap automatically */}
           <SidebarInset className="pt-14">
             {children}
           </SidebarInset>

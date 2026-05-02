@@ -35,7 +35,7 @@ export default function Apps() {
     }
 
     return (
-        <div className="min-h-screen bg-white text-gray-900">
+        <div className="min-h-screen bg-white text-gray-900 " data-lenis-prevent>
 
             {/* Header */}
             <div className="border-b border-gray-200 px-10 py-6 flex items-end justify-between">
