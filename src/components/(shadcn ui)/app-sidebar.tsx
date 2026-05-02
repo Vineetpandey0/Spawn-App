@@ -17,19 +17,15 @@ import {
   Home,
   LayoutGrid,
   FileText,
-  Plug,
-  Users,
   ChevronDown,
+  SquarePen,
   Star,
-  Clock,
-  Zap,
-  Box,
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useAppStore } from "@/store/appStore";
 
 const mainNavItems = [
-  { label: "Home", href: "/dashboard", icon: Home },
+  { label: "New App", href: "/dashboard", icon: SquarePen },
   { label: "All Apps", href: "/apps", icon: LayoutGrid },
 ];
 
@@ -52,10 +48,10 @@ export function AppSidebar() {
       {/* Empty header to offset fixed TopNav height */}
       <SidebarHeader className="h-14 shrink-0" />
 
-      <SidebarContent className="overflow-y-auto">
+      <SidebarContent className="overflow-hidden flex flex-col no-scrollbar">
 
         {/* Main Navigation */}
-        <SidebarGroup className="px-2 pt-2">
+        <SidebarGroup className="px-2 pt-2 no-scrollbar">
           {mainNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -63,7 +59,7 @@ export function AppSidebar() {
                 key={item.label}
                 href={item.href}
                 className={`
-                  group flex items-center justify-between gap-2.5 px-3 py-2 mb-0.5 text-sm rounded-lg transition-colors
+                  group no-scrollbar flex items-center justify-between gap-2.5 px-3 py-2 mb-0.5 text-sm rounded-lg transition-colors
                   ${isActive
                     ? "bg-violet-500 text-white font-medium"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -81,14 +77,14 @@ export function AppSidebar() {
         </SidebarGroup>
 
 
-        {/* Recents */}
-        <SidebarGroup className="px-2 mt-2 overscroll-auto">
+        {/* Recents — label is static, only the list scrolls */}
+        <SidebarGroup className="px-2 mt-2 flex flex-col">
+          {/* Static label */}
           <SidebarGroupLabel
-            className="flex items-center justify-between cursor-pointer select-none px-3 py-1 text-xs font-medium text-gray-500 uppercase tracking-wide hover:text-gray-700 transition-colors"
+            className="flex items-center justify-between cursor-pointer select-none px-3 py-1 text-sm font-medium text-black tracking-wide transition-colors shrink-0"
             onClick={() => setRecentsOpen((v) => !v)}
           >
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" />
               Recents
             </span>
             <ChevronDown
@@ -96,26 +92,30 @@ export function AppSidebar() {
             />
           </SidebarGroupLabel>
 
+          {/* Scrollable list only */}
           {recentsOpen && (
-            <div className="mt-0.5 flex flex-col-reverse">
-              {recentItems.map((item) => { 
+            <div
+              className="mt-0.5 flex flex-col overflow-y-auto max-h-[calc(100svh-260px)] pb-2 no-scrollbar"
+              data-lenis-prevent
+            >
+              {[...recentItems].reverse().map((item) => {
                 const isActive = pathname === item.href;
-                return(
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`
-                    flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-colors 
-                    ${isActive
-                      ? "bg-gray-200 text-gray-900 font-medium"
-                      : "text-gray-600 hover:bg-gray-100 hover:text-black"
-                    }
-                  `}
-                >
-                  
-                  {item.label}
-                </Link>
-              )})}
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className={`
+                      flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-colors
+                      ${isActive
+                        ? "bg-gray-200 text-gray-900 font-medium"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                      }
+                    `}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </SidebarGroup>
