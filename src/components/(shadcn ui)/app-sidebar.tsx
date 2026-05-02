@@ -39,6 +39,7 @@ export function AppSidebar() {
   const [recentsOpen, setRecentsOpen] = useState(true);
   const { user } = useUser();
   const { appData } = useAppStore()
+
   
   const recentItems = appData.map((app: any) => ({
     label: app.name,
@@ -64,7 +65,7 @@ export function AppSidebar() {
                 className={`
                   group flex items-center justify-between gap-2.5 px-3 py-2 mb-0.5 text-sm rounded-lg transition-colors
                   ${isActive
-                    ? "bg-gray-100 text-gray-900 font-medium"
+                    ? "bg-violet-500 text-white font-medium"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }
                 `}
@@ -97,18 +98,26 @@ export function AppSidebar() {
 
           {recentsOpen && (
             <div className="mt-0.5">
-              {recentItems.map((item) => (
+              {recentItems.map((item) => { 
+                const isActive = pathname === item.href;
+                return(
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className={`
+                    flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-colors
+                    ${isActive
+                      ? "bg-gray-200 text-gray-900 font-medium"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    }
+                  `}
                 >
                   <div className="w-5 h-5 rounded bg-blue-500 flex items-center justify-center shrink-0">
                     <item.icon className="w-3 h-3 text-white" />
                   </div>
                   {item.label}
                 </Link>
-              ))}
+              )})}
             </div>
           )}
         </SidebarGroup>
