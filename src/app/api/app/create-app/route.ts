@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ app, chat: chatHistory }, { status: 200 });
     }
     catch (err) {
-        console.log(err);
+        console.error(err);
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 }
