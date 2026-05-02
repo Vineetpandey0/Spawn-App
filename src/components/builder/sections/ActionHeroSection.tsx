@@ -114,6 +114,7 @@ export default function ActionHeroSection() {
 
   const handleSubmit = async () => {
     try{
+      setLoading(true);
       setConfigJSON(prompt);
       const res = await axios.post("/api/app/create-app", {
         name: prompt.substring(0, 20) + (prompt.length > 20 ? "..." : ""),
@@ -121,10 +122,10 @@ export default function ActionHeroSection() {
         userId: user?.id,
       });
       console.log(res)
-      router.push(`/apps/${res.data.id}`)
+      router.push(`/apps/${res.data.app.id}`)
     }
     catch(err){
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -185,7 +186,7 @@ export default function ActionHeroSection() {
                   hover:bg-gray-700 active:scale-[0.98]
                   transition-all duration-150
                   disabled:opacity-60 disabled:cursor-not-allowed
-                  shadow-sm
+                  shadow-sm cursor-pointer
                 `}
               >
                 {loading ? (
