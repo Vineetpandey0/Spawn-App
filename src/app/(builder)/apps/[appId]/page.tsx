@@ -7,7 +7,7 @@ import React, { useState, useRef, useEffect, KeyboardEvent } from 'react'
 interface Message {
   id: string
   role: 'user' | 'bot'
-  text: string
+  messages: string
   time: string
 }
 
@@ -32,6 +32,7 @@ export default function Page() {
       try {
         const res = await axios.get(`/api/app/${APP_ID}/chat`)
         setMessages(res.data.chats)
+        console.log(res.data.chats);
       } catch (err) {
         console.log(err)
       }
@@ -46,13 +47,13 @@ export default function Page() {
     el.style.height = Math.min(el.scrollHeight, 120) + 'px'
   }
 
-  async function sendMessage(text: string) {
-    if (!text.trim() || isLoading) return
+  async function sendMessage(messages: string) {
+    if (!messages.trim() || isLoading) return
 
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      text,
+      messages,
       time: getTime(),
     }
     setMessages((prev) => [...prev, userMsg])
@@ -62,7 +63,7 @@ export default function Page() {
 
     try {
       const res = await axios.post(`/api/apps/${APP_ID}/chat`, {
-        message: text
+        message: messages
       }, {
         headers: { 'Content-Type': 'application/json' }
       })
@@ -72,7 +73,7 @@ export default function Page() {
 
       setMessages((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), role: 'bot', text: reply, time: getTime() },
+        { id: crypto.randomUUID(), role: 'bot', messages: reply, time: getTime() },
       ])
     } catch (error) {
       console.error('Error sending message:', error)
@@ -81,7 +82,7 @@ export default function Page() {
         {
           id: crypto.randomUUID(),
           role: 'bot',
-          text: 'Something went wrong. Please try again.',
+          messages: 'Something went wrong. Please try again.',
           time: getTime(),
         },
       ])
@@ -103,7 +104,7 @@ export default function Page() {
     <div className="flex flex-col h-screen bg-stone-50">
 
       {/* ── Messages ── */}
-      <main className="flex-1 overflow-y-auto py-7 pb-36 scroll-smooth">
+      <main className="flex-1 overflow-y-auto py-7 pb-36 pt-14 scroll-smooth">
         <div className="max-w-2xl mx-auto px-6 flex flex-col gap-5">
             <>
               {messages.map((msg) => (
@@ -137,7 +138,7 @@ export default function Page() {
                           : 'bg-white text-stone-800 border border-stone-200 rounded-2xl rounded-tl-[4px] shadow-sm'
                       }`}
                     >
-                      {msg.text.split('\n').map((line, i, arr) => (
+                      {msg.messages?.split('\n').map((line, i, arr) => (
                         <React.Fragment key={i}>
                           {line}
                           {i < arr.length - 1 && <br />}
@@ -169,7 +170,7 @@ export default function Page() {
       </main>
 
       {/* ── Input area ── */}
-      <div className="bg-white border-t border-stone-200 px-6 pt-4 pb-5 shrink-0 w-full">
+      <div className="bg-white border-t border-stone-200 px-6 pt-4 pb-5 shrink-0 fixed bottom-0 w-full">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-end gap-2.5 bg-stone-50 border border-stone-200 rounded-2xl px-4 py-2.5 focus-within:border-blue-500 focus-within:ring-[3px] focus-within:ring-blue-500/10 transition-all">
             <textarea
