@@ -18,7 +18,7 @@ CRITICAL RULES FOR "type":
 You must choose the "type" for each page from the following supported templates:
 - "landing" (Generic marketing/landing page)
 - "college_discovery" (University/college search)
-- "real_estate" (Property listings)
+- "real_estate" (Property listings or any other related)
 - "ecommerce" (Online store with products)
 - "saas_dashboard" (Analytics, metrics, charts)
 - "job_board" (Job listings, careers)

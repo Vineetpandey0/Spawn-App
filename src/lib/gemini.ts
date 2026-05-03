@@ -34,9 +34,9 @@ export async function callGemini(input: string): Promise<string> {
   return res.text; 
 }
 
-export async function callGeminiForData(config: any, page: any): Promise<any> {
+export async function callGeminiForData(promptContext: string, config: any, page: any): Promise<any> {
   const ai = await getGeminiClient();
-  const inputPayload = JSON.stringify({ appConfig: config, page: page }, null, 2);
+  const inputPayload = JSON.stringify({ appIdeaOrPrompt: promptContext, appConfig: config, page: page }, null, 2);
   
   const res = await ai.models.generateContent({
     model: "gemini-2.5-flash", 
@@ -52,6 +52,7 @@ export async function callGeminiForData(config: any, page: any): Promise<any> {
         responseMimeType: "application/json",
     }
   });
+  console.log(res.text);
 
   try {
     const rawText = res.text || "{}";
