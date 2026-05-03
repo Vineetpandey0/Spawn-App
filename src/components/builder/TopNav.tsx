@@ -6,20 +6,55 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   LogOut,
+  Download,
 } from "lucide-react";
 
 import { useSidebar } from "@/components/ui/sidebar";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { useState, useRef, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Logo from "../logo";
+import { toast } from "sonner";
 
 export default function TopNav() {
   const { toggleSidebar, open } = useSidebar();
   const { user } = useUser();
+  const params = useParams();
+  const appId = params?.appId as string;
 
   const [openMenu, setOpenMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [geminiKey, setGeminiKey] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!appId) return;
+    
+    setIsDownloading(true);
+    const tId = toast.loading("Preparing your project ZIP...");
+    
+    try {
+      const res = await fetch(`/api/apps/${appId}/export`);
+      if (!res.ok) throw new Error("Failed to export project");
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `app-project-${appId}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success("Project downloaded successfully!", { id: tId });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to download project. Please try again.", { id: tId });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   useEffect(() => {
     // Read from cookie on mount
@@ -74,6 +109,22 @@ export default function TopNav() {
       </button>
 
       <div className="flex-1" />
+
+      {/* Export Button */}
+      {appId && (
+        <button 
+          onClick={handleDownload}
+          disabled={isDownloading}
+          className="flex items-center cursor-pointer gap-2 px-3 py-1.5 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition shadow-sm shadow-violet-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isDownloading ? (
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          <span>Download Project</span>
+        </button>
+      )}
 
       {/* Notifications */}
       <button className="relative p-1.5 rounded-md text-gray-500 hover:bg-gray-100 transition">
