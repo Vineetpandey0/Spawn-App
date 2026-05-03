@@ -93,8 +93,8 @@ export async function GET(
 
     // Create a data file for the project
     const dataFileContent = `
-export const appConfig = ${JSON.stringify(configJson, null, 2)};
-export const appData = ${JSON.stringify(pageData, null, 2)};
+export const appConfig: any = ${JSON.stringify(configJson, null, 2)};
+export const appData: Record<string, any> = ${JSON.stringify(pageData, null, 2)};
     `;
     // USER requested: "home page must be just inside src"
     // I'll put everything in src/ instead of src/app/ to make it flatter if possible
@@ -119,7 +119,7 @@ export const appData = ${JSON.stringify(pageData, null, 2)};
       
       // Add common aliases for this component to the registry too
       Object.keys(aliases).forEach(alias => {
-        if (aliases[alias] === registryKey) {
+        if (aliases[alias] === registryKey && alias !== registryKey) {
           registryConfig += `  "${alias}": ${componentName},\n`;
         }
       });
