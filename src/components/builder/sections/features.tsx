@@ -101,101 +101,122 @@ const STATS = [
 /* ─────────────────────────────────────
    PRIMARY CARD
 ───────────────────────────────────── */
+
+
+const CARD_STYLES: Array<"big-stat" | "body-first" | "title-bottom" | "dot-strip"> = [
+  "big-stat", "body-first", "title-bottom", "dot-strip"
+];
+
 function PrimaryCard({ f, i }: { f: typeof PRIMARY[0]; i: number }) {
   const { ref, visible } = useScrollReveal();
-  const tilt = useTilt();
-  const Icon = f.icon;
+  const type = CARD_STYLES[i];
+
+  const borderStyles: React.CSSProperties = {
+    "big-stat":     {},
+    "body-first":   { borderLeft: `3px solid ${f.accent}` },
+    "title-bottom": {},
+    "dot-strip":    {},
+  }[type];
 
   return (
     <div
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0) scale(1)" : "translateY(60px) scale(0.97)",
-        transition: `opacity 0.75s cubic-bezier(.22,1,.36,1) ${i * 0.13}s,
-                     transform 0.75s cubic-bezier(.22,1,.36,1) ${i * 0.13}s`,
+        transform: visible ? "translateY(0)" : "translateY(40px)",
+        transition: `opacity 0.65s cubic-bezier(.22,1,.36,1) ${i * 0.1}s,
+                     transform 0.65s cubic-bezier(.22,1,.36,1) ${i * 0.1}s`,
       }}
     >
       <div
-        ref={tilt.ref}
-        onMouseMove={tilt.onMove}
-        onMouseLeave={tilt.onLeave}
-        className="pcard"
         style={{
-          position: "relative",
-          background: "#0d0d0f",
-          borderRadius: 20,
-          padding: "2.5rem",
-          overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.06)",
-          transition: "transform 0.2s ease, box-shadow 0.3s ease",
+          background: "#fff",
+          border: "1px solid #e8e8e3",
+          borderRadius: 18,
+          padding: "1.75rem 2rem",
+          minHeight: 280,
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          transition: "background 0.2s ease, box-shadow 0.2s ease",
           cursor: "default",
+          ...borderStyles,
+        }}
+        onMouseEnter={e => {
+          (e.currentTarget as HTMLElement).style.background = "#fafaf9";
+          (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(0,0,0,0.06)";
+        }}
+        onMouseLeave={e => {
+          (e.currentTarget as HTMLElement).style.background = "#fff";
+          (e.currentTarget as HTMLElement).style.boxShadow = "none";
         }}
       >
-        {/* Accent glow */}
-        <div style={{
-          position: "absolute", top: -60, right: -60,
-          width: 220, height: 220, borderRadius: "50%",
-          background: f.accent, opacity: 0.07, filter: "blur(45px)",
-          pointerEvents: "none", transition: "opacity 0.3s",
-        }} className="card-glow" />
-
-        {/* Subtle grid */}
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.035 }} aria-hidden>
-          <defs>
-            <pattern id={`g${i}`} width="32" height="32" patternUnits="userSpaceOnUse">
-              <path d="M32 0L0 0 0 32" fill="none" stroke="white" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#g${i})`} />
-        </svg>
-
-        {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.75rem" }}>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", letterSpacing: "0.15em" }}>
-            {f.label} /
-          </span>
+        {/* Header row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 11, color: "rgba(0,0,0,0.22)", letterSpacing: "0.14em" }}>{f.label}</span>
           <span style={{
-            fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase",
-            color: f.accent, border: `1px solid ${f.accent}44`, borderRadius: 100, padding: "3px 10px",
-          }}>
-            {f.tag}
-          </span>
+            fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
+            color: f.accent,
+            background: `${f.accent}18`,
+            border: `1px solid ${f.accent}35`,
+            borderRadius: 100, padding: "3px 10px",
+          }}>{f.tag}</span>
         </div>
 
-        {/* Icon */}
-        <div style={{
-          width: 52, height: 52, borderRadius: 14,
-          background: `${f.accent}18`, border: `1px solid ${f.accent}28`,
-          display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.5rem",
-        }}>
-          <Icon size={24} color={f.accent} strokeWidth={1.5} />
-        </div>
+        {/* Card body varies by type */}
+        {type === "big-stat" && (
+          <>
+            <div style={{
+              fontSize: 72, fontWeight: 800, lineHeight: 1,
+              color: "#e5e4e0", letterSpacing: "-0.04em",
+            }}>
+              5s
+            </div>
+            <h3 style={{ fontWeight: 700, fontSize: "1.4rem", color: "#0a0a0a", lineHeight: 1.2, margin: 0 }}>
+              {f.title}
+            </h3>
+            <p style={{ fontSize: 13.5, color: "#888", lineHeight: 1.78, margin: 0 }}>{f.body}</p>
+          </>
+        )}
 
-        {/* Text */}
-        <h3 style={{
-          fontWeight: 700,
-          fontSize: "clamp(1.35rem, 2.2vw, 1.65rem)", color: "#fff",
-          lineHeight: 1.2, margin: "0 0 0.4rem",
-        }}>{f.title}</h3>
-        <p style={{ fontSize: 11, color: f.accent, opacity: 0.75, margin: "0 0 1.1rem", letterSpacing: "0.04em" }}>
-          {f.sub}
-        </p>
-        <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.48)", lineHeight: 1.78, margin: 0 }}>
-          {f.body}
-        </p>
+        {type === "body-first" && (
+          <>
+            <p style={{ fontSize: 15, color: "#555", lineHeight: 1.72, flex: 1, margin: 0 }}>{f.body}</p>
+            <h3 style={{ fontWeight: 700, fontSize: "1.5rem", color: "#0a0a0a", lineHeight: 1.15, margin: 0, marginTop: "auto" }}>
+              {f.title}
+            </h3>
+          </>
+        )}
 
-        {/* Bottom line on hover */}
-        <div className="card-line" style={{
-          position: "absolute", bottom: 0, left: 0, height: 2, width: "100%",
-          background: `linear-gradient(90deg, ${f.accent}00, ${f.accent}, ${f.accent}00)`,
-          opacity: 0, transition: "opacity 0.35s",
-        }} />
+        {type === "title-bottom" && (
+          <>
+            <h3 style={{ fontWeight: 800, fontSize: "1.75rem", color: "#0a0a0a", lineHeight: 1.1, margin: 0 }}>
+              {f.title}
+            </h3>
+            <div style={{ borderTop: "1px solid #eeeee9", paddingTop: "1rem", marginTop: "auto" }}>
+              <p style={{ fontSize: 13.5, color: "#888", lineHeight: 1.78, margin: 0 }}>{f.body}</p>
+            </div>
+          </>
+        )}
+
+        {type === "dot-strip" && (
+          <>
+            {/* coloured dot row — abstract visual texture */}
+            <div style={{ display: "flex", gap: 7, marginBottom: 4 }}>
+              {["#6366f1","#a855f7","#ec4899","#f59e0b","#38bdf8","#4ade80"].map((c, j) => (
+                <div key={j} style={{ width: 9, height: 9, borderRadius: "50%", background: c }} />
+              ))}
+            </div>
+            <h3 style={{ fontWeight: 700, fontSize: "1.4rem", color: "#0a0a0a", lineHeight: 1.2, margin: 0 }}>
+              {f.title}
+            </h3>
+            <p style={{ fontSize: 13.5, color: "#888", lineHeight: 1.78, margin: 0 }}>{f.body}</p>
+          </>
+        )}
       </div>
     </div>
   );
 }
-
 /* ─────────────────────────────────────
    SECONDARY TICKER
 ───────────────────────────────────── */
@@ -430,9 +451,9 @@ export default function Features() {
         #spawn-features { color: #111; background: #fff; }
         #spawn-features * { box-sizing: border-box; }
 
-        .pcard:hover .card-glow { opacity: 0.13 !important; }
+        .pcard:hover .card-glow { opacity: 0.35 !important; }
         .pcard:hover .card-line { opacity: 1 !important; }
-        .pcard:hover { box-shadow: 0 28px 70px rgba(0,0,0,0.28) !important; }
+        .pcard:hover { box-shadow: 0 28px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1) !important; }
         .cta-primary:hover { transform: scale(1.03); box-shadow: 0 0 35px rgba(255,255,255,0.18); }
 
         @keyframes orb1 { from { transform: translate(0,0) scale(1); } to { transform: translate(55px,40px) scale(1.2); } }
@@ -465,7 +486,7 @@ export default function Features() {
           }}>
             <SplitWords text="The fastest way to" />
             <br />
-            <span style={{ display: "inline-block", background: "linear-gradient(135deg,#6366f1,#a855f7,#ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span style={{ display: "inline-block", background: "linear-gradient(135deg,#6366f1,#a855f7,#ec4899)", WebkitBackgroundClip: "text",}}>
               <SplitWords text="ship production apps."  />
             </span>
           </h1>
@@ -478,13 +499,13 @@ export default function Features() {
 
         {/* ── PRIMARY CARDS ── */}
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 2rem 7rem" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {PRIMARY.map((f, i) => <PrimaryCard key={i} f={f} i={i} />)}
           </div>
         </div>
 
         {/* ── SECONDARY: "Everything else" ── */}
-        <div style={{ background: "#f8f8f6", borderTop: "1px solid #ebebea", borderBottom: "1px solid #ebebea", padding: "5rem 0 4.5rem" }}>
+        <div style={{ borderTop: "1px solid #ebebea", borderBottom: "1px solid #ebebea", padding: "5rem 0 4.5rem" }}>
 
           {/* Editorial header */}
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 2rem 2.75rem" }}>
