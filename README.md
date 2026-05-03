@@ -1,247 +1,173 @@
-# AI App Generator
+# Spawn.dev - AI Application Builder
 
-Build a system that converts structured JSON into a working web application with dynamic UI, backend APIs, database storage, and authentication.
+
+
+**Spawn.dev** is a powerful, AI-orchestrated runtime engine that generates fully functional, professionally designed web applications dynamically. Using natural language prompts, the platform leverages the Google Gemini API to structure data and instantly deploy specialized, interactive app templates ranging from SaaS Dashboards and E-commerce Stores to Social Feeds and Job Boards.
+
+No coding required. Just prompt, preview, and deploy.
 
 ---
 
-## Overview
+## Table of Contents
 
-AI App Generator is a config-driven platform that lets users create applications by pasting a structured JSON configuration. The system normalizes imperfect input, generates runtime pages dynamically, exposes generic CRUD APIs, and stores data in a database.
-
-Instead of hardcoding each app, the platform interprets configuration at runtime.
+1. [Features](#features)
+2. [How It Works](#how-it-works)
+3. [Supported App Templates](#supported-app-templates)
+4. [Getting Started (Local Development)](#getting-started-local-development)
+5. [Using the App](#using-the-app)
+   - [Providing Your Gemini API Key](#providing-your-gemini-api-key)
+   - [Generating an App](#generating-an-app)
+6. [Configuration Examples](#configuration-examples)
+7. [Upcoming Features](#upcoming-features)
+8. [Architecture Overview](#architecture-overview)
 
 ---
 
 ## Features
 
-* JSON-based app creation
-* Dynamic frontend rendering
-* Generic backend CRUD APIs
-* PostgreSQL-based data storage
-* Authentication and user-scoped access
-* Config validation and normalization
-* Support for imperfect or partial config
-* Extensible component registry
-* Optional features such as:
-
-  * CSV import
-  * localization
-  * comparison views
+- ✨ **Natural Language to App:** Describe your idea in plain English and watch it generate in seconds.
+- 🎨 **10+ Premium Templates:** Dynamically renders professional, highly aesthetic layouts tailored to your domain.
+- 🔑 **Bring Your Own Key (BYOK):** Seamlessly input your personal Gemini API key directly from the UI to bypass platform rate limits.
+- 💾 **Intelligent Caching:** Generated layouts and data are cached in a local database, saving tokens on subsequent visits.
+- 📱 **Fully Responsive:** All generated applications are optimized for desktop, tablet, and mobile browsers.
+- 🔐 **Authentication Ready:** Integrated securely with Clerk for robust user management.
 
 ---
 
 ## How It Works
 
-1. The user submits JSON configuration.
-2. The system validates and normalizes the config.
-3. The config is stored in the database.
-4. The runtime engine reads the config.
-5. Frontend pages are rendered dynamically.
-6. Backend APIs handle CRUD operations generically.
-7. User data is stored against the correct app and user.
+1. **Prompt Engineering:** The user enters a natural language prompt describing their desired app (e.g., *"Create a real estate discovery platform for luxury homes in Miami"*).
+2. **AI Orchestration:** The backend queries Google Gemini (using the user's provided API key or a fallback key) to output a strictly typed JSON configuration map.
+3. **Dynamic Registry:** The JSON schema determines the required pages (e.g., `/home`, `/listings`, `/dashboard`) and assigns them a UI `type` based on the intent.
+4. **Runtime Rendering:** The `AppRenderer` intercepts the route, matches the `type` against the internal Component Registry, and renders the specific Next.js template pre-populated with AI-generated mock data.
 
 ---
 
-## Project Structure
+## Supported App Templates
 
-```txt
-src/
-├── app/
-│   ├── (builder)/
-│   │   ├── dashboard/
-│   │   ├── create/
-│   │   ├── apps/
-│   │   └── layout.tsx
-│   ├── (runtime)/
-│   │   └── app/
-│   │       └── [appId]/
-│   │           └── [...slug]/
-│   ├── (auth)/
-│   ├── api/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
-├── components/
-├── lib/
-├── prisma/
-├── types/
-├── hooks/
-├── store/
-└── features/
-```
+Our runtime engine dynamically injects one of the following premium components depending on the user's intent:
+
+- `SaaSDashboard`: B2B metrics, charts, and data tables.
+- `EcommerceStore`: Product grids, shopping carts, and checkout flows.
+- `SocialFeed`: Infinite scrolling timelines and post interactions.
+- `JobBoard`: Job listings, filtering, and application modals.
+- `CollegeDiscovery`: Educational institution directories and ranking grids.
+- `RealEstateExplorer`: Property maps, image galleries, and pricing details.
+- `BookingSystem`: Service reservations, calendars, and availability slots.
+- `EventTicketing`: Neon-themed concert/event timelines and ticket purchases.
+- `BlogPlatform`: Clean typography, rich-text reader views, and author bios.
+- `PortfolioGallery`: Minimalist masonry grids for photographers and designers.
 
 ---
 
-## Core Concepts
+## Getting Started (Local Development)
 
-### Builder Platform
+### Prerequisites
+- Node.js (v18.x or later)
+- PostgreSQL Database
+- Clerk API Keys
+- Google Gemini API Key
 
-The main website where users create, edit, and manage apps.
-
-### Runtime Engine
-
-The part of the system that reads config and renders the generated app.
-
-### Normalizer
-
-A layer that converts incomplete or inconsistent JSON into a safe internal schema.
-
-### Generic API Layer
-
-A backend layer that handles any entity using the same CRUD logic.
-
-### Database Layer
-
-Stores app configs, records, and user data.
-
----
-
-## Tech Stack
-
-* **Frontend:** Next.js, React, TypeScript
-* **Backend:** Next.js Route Handlers or Node.js APIs
-* **Database:** PostgreSQL
-* **ORM:** Prisma
-* **Auth:** JWT or session-based authentication
-* **Styling:** Tailwind CSS
-
----
-
-## Folder Guide
-
-### `app/`
-
-Contains routing, pages, and API routes.
-
-### `components/`
-
-Contains reusable UI components for builder and runtime screens.
-
-### `lib/`
-
-Contains core logic such as normalization, routing helpers, auth helpers, and database utilities.
-
-### `features/`
-
-Contains optional feature modules like CSV import, localization, and comparison.
-
-### `prisma/`
-
-Contains the database schema and migrations.
-
-### `types/`
-
-Contains TypeScript type definitions.
-
-### `hooks/`
-
-Contains reusable React hooks.
-
-### `store/`
-
-Contains global state stores.
-
----
-
-## Example Config
-
-```json
-{
-  "app": {
-    "name": "College Explorer",
-    "defaultLanguage": "en"
-  },
-  "entities": [
-    {
-      "name": "College",
-      "fields": [
-        { "name": "name", "type": "string", "required": true },
-        { "name": "fees", "type": "number" },
-        { "name": "rating", "type": "number" }
-      ]
-    }
-  ],
-  "ui": {
-    "pages": [
-      { "path": "/colleges", "type": "table", "entity": "College" },
-      { "path": "/colleges/add", "type": "form", "entity": "College" }
-    ]
-  }
-}
-```
-
----
-
-## Runtime Behavior
-
-* `/app/[appId]/...` renders pages dynamically
-* `/api/app/[appId]/[entity]` handles CRUD operations
-* The system reads config and decides what component to render
-* Unknown or missing fields are handled gracefully
-
----
-
-## Database Model (Conceptual)
-
-* **apps**: stores app metadata and config
-* **records**: stores dynamic entity data
-* **users**: stores authentication data
-
----
-
-## Recommended MVP Scope
-
-For a fast and reliable build, focus on:
-
-1. Config upload / creation
-2. Normalization
-3. Dynamic form rendering
-4. Dynamic table rendering
-5. Generic CRUD APIs
-6. Authentication
-7. One strong feature such as comparison or CSV import
-
----
-
-## Setup
-
-### 1. Install dependencies
-
+### 1. Clone & Install
 ```bash
+git clone https://github.com/Vineetpandey0/App-Builder.git
+cd App-Builder
 npm install
 ```
 
-### 2. Configure environment variables
+### 2. Environment Variables
+Create a `.env` file in the root directory and populate it with your credentials:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/spawn_dev"
 
-Create a `.env` file and add your database and auth credentials.
+# Authentication (Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
 
-### 3. Run migrations
-
-```bash
-npx prisma migrate dev
+# AI Configuration (Fallback)
+GOOGLE_API_KEY="AIzaSy..."
 ```
 
-### 4. Start development server
+### 3. Database Migration
+Initialize the Prisma schema:
+```bash
+npx prisma db push
+```
 
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
+Visit `http://localhost:3000` to access the builder platform.
 
 ---
 
-## Goals
+## Using the App
 
-* Build a reliable config-driven platform
-* Support imperfect input without breaking
-* Keep the architecture extensible
-* Demonstrate full-stack system thinking
+### Providing Your Gemini API Key
+To ensure fast generations and avoid platform rate limits, users can provide their own Gemini API key:
+1. Log in to the application.
+2. Click on your **User Avatar** in the top right corner of the Top Navigation Bar.
+3. In the dropdown, paste your API key into the **Gemini API Key** input field.
+4. The key is automatically saved securely to your browser cookies and will be used for all future AI generations.
+
+### Generating an App
+1. Navigate to the **New App** dashboard.
+2. Type your application concept into the main prompt box.
+3. Click generate. The engine will communicate with Gemini, structure your database, and redirect you to the live preview window (`/apps/[appId]`).
+4. Navigate through the generated pages using the top bar of your newly spawned app!
 
 ---
 
-## Submission Checklist
+## Configuration Examples
 
-* Working live demo
-* GitHub repository
-* Short explanation video
-* Clean architecture
-* Graceful
+Behind the scenes, `spawn.dev` uses a strictly defined JSON structure to orchestrate routing. If you wish to build an app manually via API or database injection, follow this structure:
+
+```json
+{
+  "name": "Luxury Miami Real Estate",
+  "pages": [
+    {
+      "path": "/home",
+      "type": "landing",
+      "entity": "website"
+    },
+    {
+      "path": "/properties",
+      "type": "real_estate",
+      "entity": "listings"
+    },
+    {
+      "path": "/admin",
+      "type": "saas_dashboard",
+      "entity": "user"
+    }
+  ]
+}
+```
+*Note: The `type` property must exactly match a key inside `src/lib/runtime/componentRegistry.ts`.*
+
+---
+
+## Upcoming Features
+
+We are constantly evolving the `spawn.dev` engine. Our upcoming roadmap includes:
+
+- 🚀 **Autonomous Deployment:** One-click seamless deployment of your generated apps directly to Vercel or Netlify via API integration.
+- 📦 **GitHub Repository Export:** Export your generated JSON, dynamic templates, and Next.js boilerplate directly to a new GitHub repository on your account.
+- 🧩 **Custom Component Injection:** Upload your own React components to the engine registry to create bespoke template sets.
+- 🔄 **Persistent State Management:** Moving beyond static mock data by hooking generated apps up to live PostgreSQL instances automatically.
+- 🎨 **Theme Customization:** Exposing color palettes, fonts, and border radii settings to the user via an intuitive design side-panel.
+
+---
+
+## Architecture Overview
+
+- **Frontend:** Next.js 14 App Router, React, Tailwind CSS, Shadcn UI
+- **Backend:** Next.js Route Handlers, Server Components
+- **AI Integration:** `@google/genai` (Gemini 2.5 Flash)
+- **Database:** PostgreSQL accessed via Prisma ORM
+- **Authentication:** Clerk
+
+Built with ❤️ by the spawn.dev team.
