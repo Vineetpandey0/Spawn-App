@@ -11,6 +11,7 @@ import {
   SidebarHeader,
   SidebarGroup,
   SidebarGroupLabel,
+  useSidebar,
 } from "../ui/sidebar";
 
 import {
@@ -24,6 +25,8 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { useAppStore } from "@/store/appStore";
 
+import Logo from "../logo";
+
 const mainNavItems = [
   { label: "New App", href: "/dashboard", icon: SquarePen },
   { label: "All Apps", href: "/apps", icon: LayoutGrid },
@@ -34,7 +37,8 @@ export function AppSidebar() {
   const pathname = usePathname();
   const [recentsOpen, setRecentsOpen] = useState(true);
   const { user } = useUser();
-  const { appData } = useAppStore()
+  const { appData } = useAppStore();
+  const { setOpenMobile, isMobile } = useSidebar();
 
   
   const recentItems = appData.map((app: any) => ({
@@ -43,11 +47,23 @@ export function AppSidebar() {
     href: `/apps/${app.id}`,
     icon: FileText,
   }));
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
   return (
     <Sidebar className="border-r border-gray-200 bg-white">
 
-      {/* Empty header to offset fixed TopNav height */}
-      <SidebarHeader className="h-14 shrink-0" />
+      {/* Header with Logo for mobile, empty offset for desktop */}
+      <SidebarHeader className="h-14 shrink-0 flex items-start justify-center px-4">
+        <div className="md:hidden flex items-center gap-2 mt-2">
+          <Logo />
+          <span className="font-bold text-xl tracking-tight text-gray-900 ml-1">spawn.dev</span>
+        </div>
+      </SidebarHeader>
 
       <SidebarContent className="overflow-hidden flex flex-col no-scrollbar">
 
@@ -59,6 +75,7 @@ export function AppSidebar() {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={handleLinkClick}
                 className={`
                   group no-scrollbar flex items-center justify-between gap-2.5 px-3 py-2 mb-0.5 text-sm rounded-lg transition-colors
                   ${isActive
@@ -105,6 +122,7 @@ export function AppSidebar() {
                   <Link
                     key={item.id}
                     href={item.href}
+                    onClick={handleLinkClick}
                     className={`
                       flex items-center gap-2.5 px-3 py-2 text-sm rounded-lg transition-colors
                       ${isActive
