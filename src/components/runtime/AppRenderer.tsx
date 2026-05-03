@@ -52,7 +52,7 @@ export default async function AppRenderer({
   if (existingData) {
     data = existingData; // Use cached data to save API tokens
   } else {
-    data = await callGeminiForData(config, page);
+    data = await callGeminiForData(app.name, config, page);
     
     // Store the generated data in chats as the assistant's response
     try {
