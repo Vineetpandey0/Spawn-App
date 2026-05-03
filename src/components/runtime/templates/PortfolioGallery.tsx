@@ -88,7 +88,7 @@ export default function PortfolioGallery({ data }: { data?: PortfolioData }) {
               className="group flex flex-col"
             >
               <div className="relative aspect-[4/3] bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800/50 mb-6">
-                <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 group-hover:opacity-50 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-zinc-800/50 to-zinc-900/50 group-hover:opacity-50 transition-opacity duration-500"></div>
                 
                 {/* Mock abstract representation of project based on index */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-50 group-hover:scale-105 transition-all duration-700">
@@ -115,9 +115,9 @@ export default function PortfolioGallery({ data }: { data?: PortfolioData }) {
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {project.technologies?.map((tech: string, idx: number) => (
+                  {project.technologies?.map((tech: string, idx: number, arr: string[]) => (
                     <span key={idx} className="text-sm font-mono text-zinc-500">
-                      {tech}{idx < project.technologies.length - 1 ? ' • ' : ''}
+                      {tech}{idx < arr.length - 1 ? ' • ' : ''}
                     </span>
                   ))}
                 </div>

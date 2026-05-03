@@ -149,7 +149,7 @@ export default function SocialFeed({ data }: { data?: SocialData }) {
                     </p>
 
                     {/* Fake image block if text suggests media */}
-                    {post.content?.length > 100 && post.id % 2 === 0 && (
+                    {post.content?.length > 100 && (post.id as any) % 2 === 0 && (
                       <div className="w-full aspect-video bg-slate-900 rounded-2xl mb-3 border border-slate-800 flex items-center justify-center text-slate-700">
                         [Media Attachment]
                       </div>
