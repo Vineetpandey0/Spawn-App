@@ -4,9 +4,9 @@
 
 **Generate. Preview. Deploy. In seconds.**
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
 [![Clerk](https://img.shields.io/badge/Auth-Clerk-6C47FF?style=flat-square&logo=clerk)](https://clerk.com/)
 [![Gemini](https://img.shields.io/badge/AI-Gemini%202.5-4285F4?style=flat-square&logo=google)](https://ai.google.dev/)
@@ -66,14 +66,14 @@ The result is a fully navigable, multi-page web application with real UI compone
 |---|---|
 | 🧠 **Natural Language to App** | Describe your idea in plain English. The AI figures out the rest. |
 | 🎨 **10+ Premium Templates** | Hand-crafted, domain-specific layouts from SaaS dashboards to real estate explorers. |
-| 🚀 **One-Click Vercel Deploy** | Push your generated app directly to production on Vercel without leaving the browser. |
-| 📦 **Next.js ZIP Export** | Download the full, runnable Next.js project as a ZIP archive for local editing or custom hosting. |
-| 🔑 **Bring Your Own Key (BYOK)** | Paste your personal Gemini API key in the UI to bypass platform rate limits. |
-| 💾 **Intelligent Caching** | Generated configs are cached in a local database — revisiting an app never costs extra tokens. |
+| 🚀 **One-Click Vercel Deploy** | Push your generated app directly to production on Vercel via API integration. |
+| 📦 **Next.js ZIP Export** | Download the full, runnable Next.js project as a ZIP archive for local editing. |
+| 🔑 **Settings & BYOK** | Centralized settings page for Gemini API Keys and Vercel Tokens. |
+| 💾 **Intelligent Caching** | Generated configs are cached in PostgreSQL via Prisma for instant reloading. |
 | 📱 **Fully Responsive** | Every template is optimized for desktop, tablet, and mobile out of the box. |
-| 🔐 **Authentication Ready** | Full user management via Clerk — login, sessions, and per-user API key storage included. |
-| 🗺️ **Multi-Page Navigation** | Generated apps are multi-route applications with a functional top navigation bar. |
-| ⚡ **Streaming Generation** | Watch your app materialize in real time as the AI streams its configuration. |
+| 🔐 **Authentication Ready** | Full user management via Clerk — login, sessions, and secure data handling. |
+| 🗺️ **Multi-Page Navigation** | Dynamic routing handles complex multi-page app structures automatically. |
+| ⚡ **Vite-like Speed** | Near-instant generation and rendering using Next.js 15+ and React 19. |
 
 ---
 
@@ -328,17 +328,19 @@ npm run type-check  # Run TypeScript type checking
 
 ## 🎮 Using the App
 
-### Providing Your Gemini API Key
+### Providing Your API Keys
 
-Spawn.dev supports **Bring Your Own Key (BYOK)** to avoid platform rate limits and ensure fast, unthrottled generations.
+Spawn.dev supports **Bring Your Own Key (BYOK)** for both Google Gemini and Vercel.
 
 1. Log in to the application.
-2. Click your **User Avatar** in the top-right corner of the navigation bar.
-3. In the dropdown menu, locate the **Gemini API Key** input field.
-4. Paste your key (format: `AIzaSy...`).
-5. The key is automatically and securely saved to your **browser cookies** and will be used for all subsequent AI requests.
+2. Click on the **User Profile** section in the **Sidebar Footer**.
+3. Select **"Settings"** from the popup menu.
+4. In the **"API Keys"** tab:
+   - Paste your **Gemini API Key** to enable AI generation.
+   - Paste your **Vercel API Token** to enable one-click deployments.
+5. Your keys are securely stored in your **browser cookies** and used for all subsequent requests.
 
-> **Privacy:** Your API key is stored client-side in cookies and is sent directly to the Gemini API. It is never stored on Spawn.dev's servers.
+> **Privacy:** Your API keys are stored client-side in cookies and are never stored on Spawn.dev's permanent servers.
 
 ---
 
@@ -463,12 +465,12 @@ Spawn.dev is a full-stack Next.js 14 application using the App Router. Here is a
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Frontend** | Next.js 14 (App Router) | File-based routing, React Server Components, streaming |
-| **UI Library** | Tailwind CSS + Shadcn UI | Utility-first styling and accessible component primitives |
-| **AI Integration** | `@google/genai` (Gemini 2.5 Flash) | Structured JSON configuration generation from natural language |
-| **Database** | PostgreSQL + Prisma ORM | App config persistence, caching, user data |
-| **Authentication** | Clerk | User accounts, sessions, OAuth, BYOK key storage |
-| **Deployment** | Vercel (target) | Edge-optimized serverless Next.js hosting |
+| **Frontend** | Next.js 15+ (App Router) | React 19, Server Components, Streaming |
+| **UI Library** | Tailwind CSS 4 + Shadcn UI | Premium, utility-first design system |
+| **AI Integration** | `@google/genai` (Gemini 2.5 Flash) | Context-aware application configuration generation |
+| **Database** | PostgreSQL + Prisma ORM | Data persistence and configuration caching |
+| **Authentication** | Clerk | Secure user authentication and session management |
+| **Deployment** | Vercel API | Automated project creation and deployment |
 
 ### Request Flow
 
@@ -477,8 +479,10 @@ Browser
   │
   ▼
 Next.js App Router
-  ├─ /dashboard          → App creation UI
-  ├─ /api/generate       → POST: AI generation route handler
+  ├─ /dashboard                → Dashboard & App creation UI
+  ├─ /api/app/create-app       → POST: AI configuration & App creation
+  ├─ /api/apps/[appId]/deploy  → POST/DELETE: Vercel deployment management
+  ├─ /api/apps/[appId]/export  → GET: ZIP project generation
   │     ├─ Reads user's Gemini key from cookies (or fallback env key)
   │     ├─ Sends structured prompt to Gemini 2.5 Flash
   │     ├─ Validates returned JSON config
@@ -513,42 +517,22 @@ export const componentRegistry: Record<string, React.ComponentType<any>> = {
 ```
 App-Builder/
 ├── prisma/
-│   └── schema.prisma              # Database schema (App, Page, User models)
-│
+│   └── schema.prisma              # Database schema
 ├── src/
 │   ├── app/
-│   │   ├── (auth)/                # Clerk sign-in / sign-up pages
+│   │   ├── (builder)/             # Main dashboard & builder workspace
 │   │   ├── api/
-│   │   │   ├── generate/          # POST /api/generate — AI generation handler
-│   │   │   ├── deploy/            # POST /api/deploy — Vercel deployment handler
-│   │   │   └── export/            # GET /api/export/[appId] — ZIP export handler
-│   │   ├── apps/
-│   │   │   └── [appId]/
-│   │   │       └── [...path]/     # Dynamic AppRenderer — catches all app routes
-│   │   ├── dashboard/             # Main user dashboard (app list + creation)
-│   │   └── layout.tsx             # Root layout with ClerkProvider
-│   │
+│   │   │   ├── app/               # App creation & listing endpoints
+│   │   │   └── apps/              # Deployment & Export endpoints
+│   │   └── apps/[appId]/          # Dynamic App Runtime Renderer
 │   ├── components/
-│   │   ├── templates/             # 10+ premium app templates
-│   │   │   ├── SaaSDashboard.tsx
-│   │   │   ├── EcommerceStore.tsx
-│   │   │   ├── RealEstateExplorer.tsx
-│   │   │   └── ...
-│   │   └── ui/                    # Shadcn UI primitives + custom shared components
-│   │
-│   └── lib/
-│       ├── runtime/
-│       │   └── componentRegistry.ts   # Maps type keys → React components
-│       ├── ai/
-│       │   └── generateConfig.ts      # Gemini API call + prompt templates
-│       ├── db/
-│       │   └── prisma.ts              # Prisma client singleton
-│       └── utils.ts                   # Shared utility functions
-│
-├── .env.example
-├── next.config.js
+│   │   ├── builder/               # Builder UI components (TopNav, Sidebar, Settings)
+│   │   ├── runtime/               # 10+ premium app templates
+│   │   └── ui/                    # Shadcn UI primitives
+│   ├── hooks/                     # Custom hooks (useAppActions, etc.)
+│   └── lib/                       # Database, AI, and Utility logic
+├── next.config.ts
 ├── tailwind.config.js
-├── tsconfig.json
 └── package.json
 ```
 
@@ -560,14 +544,11 @@ We're actively building the next generation of Spawn.dev. Here's what's on the r
 
 | Feature | Status | Description |
 |---|---|---|
-| 🚀 **Autonomous Vercel Deploy** | ✅ **Shipped** | One-click deployment to Vercel from the preview window |
-| 📦 **Next.js ZIP Export** | ✅ **Shipped** | Download your generated app as a self-contained Next.js project |
-| 🐙 **GitHub Repository Export** | 🔨 In Progress | Push generated code directly to a new GitHub repo on your account |
-| 🧩 **Custom Component Injection** | 📅 Planned | Upload your own React components to the engine registry |
-| 🔄 **Persistent State Management** | 📅 Planned | Connect generated apps to live PostgreSQL instances for real data |
-| 🎨 **Theme Customization Panel** | 📅 Planned | Side panel for adjusting color palettes, fonts, and border radii |
-| 🌐 **Custom Domain Binding** | 📅 Planned | Attach a custom domain to deployed apps via Vercel API |
-| 🤝 **Team Collaboration** | 📅 Planned | Share apps with team members, leave comments, manage permissions |
+| 🐙 **GitHub Repository Export** | 🔨 In Progress | Push generated code directly to a new GitHub repo |
+| 🧩 **Custom Component Injection** | 📅 Planned | Upload your own React components to the engine |
+| 🔄 **Persistent State Management** | 📅 Planned | Connect generated apps to live PostgreSQL instances |
+| 🎨 **Theme Customization Panel** | 📅 Planned | Visual panel for adjusting colors, fonts, and radii |
+| 🤝 **Team Collaboration** | 📅 Planned | Share apps with team members and manage permissions |
 
 ---
 
