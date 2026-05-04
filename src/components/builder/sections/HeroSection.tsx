@@ -69,8 +69,8 @@ function AnimatedHeadline() {
   });
 
   return (
-    <h1 className="text-center font-black tracking-tight leading-[1.06] text-gray-950"
-      style={{ fontSize: "clamp(2.4rem, 7vw, 5.5rem)", letterSpacing: "-0.04em", maxWidth: 820 }}>
+    <h1 className="text-center mt-10 font-black tracking-tight leading-[1.06] text-gray-950"
+      style={{ fontSize: "clamp(2.8rem, 8vw, 5.5rem)", letterSpacing: "-0.04em", maxWidth: 820 }}>
       <span className="block">
         {words.map((w, i) => (
           <span key={i} style={wordStyle(w.delay)}>{w.text}</span>
@@ -257,32 +257,7 @@ function PromptBox() {
   );
 }
 
-/* ─────────────────────────────────────
-   SOCIAL PROOF BAR
-───────────────────────────────────── */
-function SocialProof() {
-  const avatars = ["🧑‍💻","👩‍🎨","🧑‍🚀","👩‍💼","🧑‍🔬"];
-  return (
-    <div
-      className="flex items-center gap-3 mt-6"
-      style={{ opacity: 0, animation: "fadeUp 0.7s cubic-bezier(.22,1,.36,1) 1.1s forwards" }}
-    >
-      <div className="flex -space-x-2">
-        {avatars.map((a, i) => (
-          <div key={i} className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100
-            border-2 border-white flex items-center justify-center text-xs shadow-sm">
-            {a}
-          </div>
-        ))}
-      </div>
-      <div className="text-xs text-gray-500 leading-tight">
-        <span className="font-semibold text-gray-700">2,400+</span> apps built this week
-        <span className="mx-1.5 text-gray-300">·</span>
-        <span className="text-yellow-500">★★★★★</span>
-      </div>
-    </div>
-  );
-}
+
 
 /* ─────────────────────────────────────
    MAIN EXPORT
@@ -315,7 +290,7 @@ export default function HeroSection() {
           px-5 sm:px-8"
         style={{
           paddingTop: "clamp(5rem, 10vw, 8rem)",
-          paddingBottom: "clamp(4rem, 8vw, 6rem)",
+          paddingBottom: "clamp(2rem, 5vw, 6rem)",
         }}
       >
         {/* ── Background atmosphere ── */}
@@ -360,20 +335,6 @@ export default function HeroSection() {
         {/* ── Main content ── */}
         <div className="relative z-10 flex flex-col items-center w-full max-w-4xl gap-0">
 
-          {/* Badge */}
-          <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6 text-xs font-semibold tracking-wide"
-            style={{
-              background: "rgba(99,102,241,0.07)",
-              border: "1px solid rgba(99,102,241,0.2)",
-              color: "#6366f1",
-              opacity: 0,
-              animation: "fadeUp 0.6s cubic-bezier(.22,1,.36,1) 0.05s forwards",
-            }}
-          >
-            <SparklesIcon size={12} />
-            AI-Powered App Builder · No Code Required
-          </div>
 
           {/* Headline */}
           <div className="mb-5 w-full flex justify-center">
@@ -396,8 +357,6 @@ export default function HeroSection() {
           {/* Prompt box */}
           <PromptBox />
 
-          {/* Social proof */}
-          <SocialProof />
         </div>
       </section>
     </>
