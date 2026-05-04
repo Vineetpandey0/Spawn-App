@@ -184,7 +184,7 @@ export function AppSidebar() {
               <SignOutButton>
                 <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 font-semibold rounded-lg hover:bg-red-50 transition">
                   <LogOut className="w-4 h-4" />
-                  Sign out
+                  Log out
                 </button>
               </SignOutButton>
             </div>
