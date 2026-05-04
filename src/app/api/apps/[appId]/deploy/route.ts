@@ -25,9 +25,12 @@ export async function POST(
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
-    const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+    const cookieStore = await req.cookies;
+    const userVercelToken = cookieStore.get("vercel_token")?.value;
+    const VERCEL_TOKEN = userVercelToken || process.env.VERCEL_TOKEN;
+
     if (!VERCEL_TOKEN) {
-      return NextResponse.json({ error: "Vercel API Token not configured in .env" }, { status: 500 });
+      return NextResponse.json({ error: "Vercel API Token not configured. Please add it in Settings." }, { status: 401 });
     }
 
     const configJson = app.config_json as any;
@@ -198,9 +201,12 @@ export async function DELETE(
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
-    const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+    const cookieStore = await req.cookies;
+    const userVercelToken = cookieStore.get("vercel_token")?.value;
+    const VERCEL_TOKEN = userVercelToken || process.env.VERCEL_TOKEN;
+
     if (!VERCEL_TOKEN) {
-      return NextResponse.json({ error: "Vercel API Token not configured" }, { status: 500 });
+      return NextResponse.json({ error: "Vercel API Token not configured" }, { status: 401 });
     }
 
     const projectName = `${app.name.toLowerCase().replace(/\s+/g, "-")}-spawn-app`;
